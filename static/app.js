@@ -65,10 +65,39 @@ Sólo vine a darte hasta las seis`,
 // Inicialización de la aplicación
 document.addEventListener("DOMContentLoaded", () => {
   setupTabs();
+  setupCharCounters();
   loadStoredConfig();
   checkFirstVisitAndModal();
   loadEnricherSample(1);
 });
+
+function setupCharCounters() {
+  const enricherInput = document.getElementById("enricher-input");
+  const enricherCounter = document.getElementById("enricher-char-counter");
+  const whispersInput = document.getElementById("whispers-input");
+  const whispersCounter = document.getElementById("whispers-char-counter");
+
+  const updateCounter = (inputEl, counterEl) => {
+    const len = inputEl.value.length;
+    counterEl.innerText = `${len.toLocaleString()} / 10.000`;
+    if (len >= 9900) {
+      counterEl.className = "char-counter limit";
+    } else if (len >= 8000) {
+      counterEl.className = "char-counter warning";
+    } else {
+      counterEl.className = "char-counter";
+    }
+  };
+
+  enricherInput.addEventListener("input", () => updateCounter(enricherInput, enricherCounter));
+  whispersInput.addEventListener("input", () => updateCounter(whispersInput, whispersCounter));
+
+  // Exponer para actualización tras cargar muestras
+  window.updateAllCounters = () => {
+    updateCounter(enricherInput, enricherCounter);
+    updateCounter(whispersInput, whispersCounter);
+  };
+}
 
 function setupTabs() {
   const tabEnricher = document.getElementById("tab-enricher");
@@ -211,6 +240,7 @@ function loadEnricherSample(id) {
   const input = document.getElementById("enricher-input");
   if (ENRICHER_SAMPLES[id]) {
     input.value = ENRICHER_SAMPLES[id];
+    if (window.updateAllCounters) window.updateAllCounters();
   }
 }
 
@@ -218,6 +248,7 @@ function loadWhispersSample(id) {
   const input = document.getElementById("whispers-input");
   if (WHISPERS_SAMPLES[id]) {
     input.value = WHISPERS_SAMPLES[id];
+    if (window.updateAllCounters) window.updateAllCounters();
   }
 }
 

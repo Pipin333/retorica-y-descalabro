@@ -354,6 +354,30 @@ textarea {
   line-height: 1.5;
 }
 
+.textarea-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  width: 100%;
+}
+
+.char-counter {
+  align-self: flex-end;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  transition: color var(--transition-fast);
+}
+
+.char-counter.warning {
+  color: var(--text-gold);
+}
+
+.char-counter.limit {
+  color: var(--danger);
+  font-weight: 700;
+}
+
 .controls-row {
   display: flex;
   flex-direction: column;

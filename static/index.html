@@ -64,8 +64,11 @@
               <button type="button" class="pill-btn" onclick="loadEnricherSample(3)">Dramático</button>
             </div>
           </div>
-          <label for="enricher-input" class="sr-only">Texto coloquial</label>
-          <textarea id="enricher-input" rows="8" placeholder="Escribe cualquier frase, modismo o canción..."></textarea>
+          <div class="textarea-container">
+            <label for="enricher-input" class="sr-only">Texto coloquial</label>
+            <textarea id="enricher-input" rows="8" maxlength="10000" placeholder="Escribe cualquier frase, modismo o canción..."></textarea>
+            <span id="enricher-char-counter" class="char-counter">0 / 10.000</span>
+          </div>
 
           <div class="controls-row">
             <div class="inputs-row">
@@ -115,8 +118,11 @@
               <button type="button" class="pill-btn" onclick="loadWhispersSample(2)">Reclamo</button>
             </div>
           </div>
-          <label for="whispers-input" class="sr-only">Texto original</label>
-          <textarea id="whispers-input" rows="8" placeholder="Pega aquí la letra o frase a descalabrar..."></textarea>
+          <div class="textarea-container">
+            <label for="whispers-input" class="sr-only">Texto original</label>
+            <textarea id="whispers-input" rows="8" maxlength="10000" placeholder="Pega aquí la letra o frase a descalabrar..."></textarea>
+            <span id="whispers-char-counter" class="char-counter">0 / 10.000</span>
+          </div>
 
           <div class="controls-row">
             <div class="inputs-row">
