@@ -1,7 +1,12 @@
 # 📜 Retórica & Descalabro
 > **Enriquecedor de Párrafos Barroco** & **Traductor de Teléfono Descompuesto (Back-Translation)**
 
-Una aplicación web interactiva híbrida desarrollada con **FastAPI**, **Deep-Translator** / **MyMemory API**, heurísticas léxicas barrocas y soporte opcional para **LLMs gratuitos** (Groq / OpenRouter / Ollama).
+> [!IMPORTANT]
+> **🚀 Migración Oficial al Laboratorio:**
+> Esta herramienta ahora vive, se mantiene y se ejecuta en producción como parte del Laboratorio oficial de **Felipe Riquelme**:
+> 👉 **[Probar Retórica y Descalabro en vivo en feliperiquel.me/lab/retorica](https://feliperiquel.me/lab/retorica)**
+> 
+> Este repositorio se preserva como la implementación de referencia en Python/FastAPI con tests en pytest y Dockerfile.
 
 ---
 
