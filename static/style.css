@@ -230,6 +230,8 @@ body {
 
 input[type="text"],
 input[type="password"],
+input[type="number"],
+input,
 select,
 textarea {
   background: var(--bg-surface);
@@ -239,7 +241,12 @@ textarea {
   padding: 0.65rem 0.85rem;
   font-family: inherit;
   font-size: 0.95rem;
+  height: 42px;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+textarea {
+  height: auto;
 }
 
 input:focus-visible,
@@ -360,7 +367,12 @@ textarea {
   flex-direction: column;
   gap: 0.35rem;
   flex: 1;
-  min-width: 150px;
+  min-width: 130px;
+}
+
+#custom-preset-config {
+  min-width: 100px;
+  flex: 0 1 110px;
 }
 
 .mode-select-group label,
@@ -368,6 +380,7 @@ textarea {
   font-size: 0.8rem;
   font-weight: 500;
   color: var(--text-muted);
+  white-space: nowrap;
 }
 
 .btn-primary {
@@ -375,7 +388,11 @@ textarea {
   color: #fff;
   border: none;
   font-weight: 600;
-  padding: 0.75rem 1.4rem;
+  padding: 0 1.4rem;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
