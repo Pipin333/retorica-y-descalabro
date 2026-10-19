@@ -1,0 +1,11 @@
+services:
+  web:
+    build: .
+    container_name: telefono_descompuesto_app
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    env_file:
+      - .env.example
+    restart: unless-stopped

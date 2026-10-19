@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Retórica Barroca & Teléfono Descompuesto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-container">
+      <div class="logo-group">
+        <span class="logo-icon">📜</span>
+        <div>
+          <h1 class="logo-title">Retórica & Descalabro</h1>
+          <p class="logo-subtitle">Enriquecedor Ultra-Barroco y Teléfono Descompuesto Multilingüe</p>
+        </div>
+      </div>
+      <nav class="nav-tabs" role="tablist">
+        <button id="tab-enricher" class="tab-btn active" role="tab" aria-selected="true" aria-controls="panel-enricher" type="button">
+          ✨ Enriquecedor de Párrafos
+        </button>
+        <button id="tab-whispers" class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-whispers" type="button">
+          📞 Teléfono Descompuesto
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <!-- Configuración Opcional LLM Drawer -->
+    <details class="llm-drawer">
+      <summary class="llm-drawer-summary">
+        <span>⚙️ Configuración Opcional de Modelo de Lenguaje (Groq / OpenRouter / Ollama)</span>
+        <span class="drawer-badge">Opcional</span>
+      </summary>
+      <div class="llm-drawer-body">
+        <p class="drawer-tip">
+          Por defecto, la app funciona 100% gratis con el motor heurístico local y la API de traducción real. Si posees una API Key gratuita de Groq u OpenRouter, o tienes Ollama local, puedes activarla aquí para respuestas generativas.
+        </p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="llm-base-url">Base URL:</label>
+            <input type="text" id="llm-base-url" value="https://api.groq.com/openai/v1" placeholder="ej. https://api.groq.com/openai/v1" />
+          </div>
+          <div class="form-group">
+            <label for="llm-api-key">API Key:</label>
+            <input type="password" id="llm-api-key" placeholder="gsk_... (opcional)" autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label for="llm-model">Modelo:</label>
+            <input type="text" id="llm-model" value="llama-3.1-8b-instant" placeholder="ej. llama-3.1-8b-instant" />
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- PANEL 1: ENRIQUECEDOR DE PÁRRAFOS -->
+    <section id="panel-enricher" class="tab-panel active" role="tabpanel" aria-labelledby="tab-enricher">
+      <div class="panel-hero">
+        <h2>Transformador a Prosa Barroca y Académica</h2>
+        <p>Eleva canciones urbanas, modismos o frases cotidianas a tratados filosóficos del siglo XIX.</p>
+      </div>
+
+      <div class="workbench-grid">
+        <!-- Entrada -->
+        <div class="card card-input">
+          <div class="card-header">
+            <h3>Entrada Coloquial</h3>
+            <div class="preset-pills">
+              <button type="button" class="pill-btn" onclick="loadEnricherSample(1)">Bad Bunny</button>
+              <button type="button" class="pill-btn" onclick="loadEnricherSample(2)">Cotidiano</button>
+              <button type="button" class="pill-btn" onclick="loadEnricherSample(3)">Dramático</button>
+            </div>
+          </div>
+          <label for="enricher-input" class="sr-only">Texto coloquial de entrada</label>
+          <textarea id="enricher-input" rows="7" placeholder="Escribe aquí tu frase o letra (ej. Sigue tu camino que sin ti me va mejor...)"></textarea>
+
+          <div class="controls-row">
+            <div class="mode-select-group">
+              <label for="enricher-engine">Motor:</label>
+              <select id="enricher-engine">
+                <option value="heuristic">⚡ Heurístico Barroco (Instantáneo y Gratis)</option>
+                <option value="llm">🧠 Modelo LLM (Requiere API Key arriba)</option>
+              </select>
+            </div>
+
+            <div class="level-select-group" id="enricher-level-container">
+              <label for="enricher-level">Rimbombancia:</label>
+              <select id="enricher-level">
+                <option value="1">Nivel 1: Carta Formal</option>
+                <option value="2" selected>Nivel 2: Tratado Académico</option>
+                <option value="3">Nivel 3: Barroco Rococó Absurdo</option>
+              </select>
+            </div>
+
+            <button type="button" id="btn-run-enricher" class="btn-primary" onclick="handleEnrich()">
+              Transformar a Barroco ✨
+            </button>
+          </div>
+        </div>
+
+        <!-- Salida -->
+        <div class="card card-output">
+          <div class="card-header">
+            <h3>Prosa Enriquecida</h3>
+            <button type="button" class="copy-btn" id="copy-enricher-btn" onclick="copyToClipboard('enricher-output', this)">
+              Copiar
+            </button>
+          </div>
+          <div id="enricher-output-container" class="output-box">
+            <p class="placeholder-text">El resultado de la transmutación barroca aparecerá aquí...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 2: TELÉFONO DESCOMPUESTO -->
+    <section id="panel-whispers" class="tab-panel" role="tabpanel" aria-labelledby="tab-whispers" hidden>
+      <div class="panel-hero">
+        <h2>Simulador de Teléfono Descompuesto (Back-Translation)</h2>
+        <p>Degrada y distorsiona el texto haciéndolo viajar por múltiples idiomas sin piedad semántica.</p>
+      </div>
+
+      <div class="workbench-grid">
+        <!-- Entrada -->
+        <div class="card card-input">
+          <div class="card-header">
+            <h3>Texto Original</h3>
+            <div class="preset-pills">
+              <button type="button" class="pill-btn" onclick="loadWhispersSample(1)">Reggaeton</button>
+              <button type="button" class="pill-btn" onclick="loadWhispersSample(2)">Reclamo</button>
+            </div>
+          </div>
+          <label for="whispers-input" class="sr-only">Texto para teléfono descompuesto</label>
+          <textarea id="whispers-input" rows="7" placeholder="Introduce el texto que deseas someter a degradación multilingüe..."></textarea>
+
+          <div class="controls-row">
+            <div class="mode-select-group">
+              <label for="whispers-engine">Modo:</label>
+              <select id="whispers-engine" onchange="toggleWhispersMode()">
+                <option value="chain">🌐 Traducción Encadenada Real (MyMemory)</option>
+                <option value="llm">🧠 Simulación LLM Caótica (Requiere API Key)</option>
+              </select>
+            </div>
+
+            <div class="level-select-group" id="whispers-preset-container">
+              <label for="whispers-preset">Ruta de idiomas:</label>
+              <select id="whispers-preset">
+                <option value="ligero">Ligero: ES ➔ EN ➔ FR ➔ ES</option>
+                <option value="clasico" selected>Clásico: ES ➔ EN ➔ DE ➔ IT ➔ ES</option>
+                <option value="exotico">Exótico: ES ➔ JA ➔ RU ➔ AR ➔ ES</option>
+                <option value="maximo_caos">Máximo Caos: ES ➔ EL ➔ PL ➔ FI ➔ JA ➔ DE ➔ ES</option>
+              </select>
+            </div>
+
+            <div class="level-select-group" id="whispers-acoustic-container">
+              <label for="whispers-acoustic">Distorsión Acústica:</label>
+              <select id="whispers-acoustic">
+                <option value="true" selected>👂 Activada (Mondegreen / Slang)</option>
+                <option value="false">Desactivada (Solo Idiomas)</option>
+              </select>
+            </div>
+
+            <button type="button" id="btn-run-whispers" class="btn-primary" onclick="handleWhispers()">
+              Descomponer Texto 📞
+            </button>
+          </div>
+        </div>
+
+        <!-- Salida & Timeline de Saltos -->
+        <div class="card card-output">
+          <div class="card-header">
+            <h3>Resultado Descompuesto</h3>
+            <button type="button" class="copy-btn" id="copy-whispers-btn" onclick="copyToClipboard('whispers-final-text', this)">
+              Copiar
+            </button>
+          </div>
+          <div id="whispers-output-container" class="output-box">
+            <p class="placeholder-text">La distorsión multilingüe y sus saltos aparecerán aquí...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline visual de pasos -->
+      <section id="whispers-steps-section" class="steps-section" style="display: none;">
+        <h3>Ruta de Deriva Lingüística (Paso a Paso)</h3>
+        <div id="steps-timeline" class="timeline-container"></div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>Retórica & Descalabro — Desarrollado con FastAPI, Deep-Translator y Heurística Barroca.</p>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
