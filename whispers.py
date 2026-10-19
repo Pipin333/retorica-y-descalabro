@@ -116,8 +116,6 @@ def run_whispers_chain(
     Returns:
         Diccionario con pasos intermedios, idiomas y texto final.
     """
-    from acoustic import apply_acoustic_layer
-
     if chain is None or len(chain) < 2:
         chain = CHAOS_PRESETS["clasico"]
 
@@ -137,15 +135,6 @@ def run_whispers_chain(
     ]
 
     current_text = text
-    if acoustic_distortion:
-        distorted, _ = apply_acoustic_layer(current_text)
-        if distorted != current_text:
-            current_text = distorted
-            steps.append({
-                "step": len(steps),
-                "lang_name": "👂 Malentendido Acústico / Jerga Literal",
-                "text": current_text
-            })
 
     for i in range(len(chain) - 1):
         src = chain[i]
