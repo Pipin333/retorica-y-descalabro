@@ -101,3 +101,59 @@ def test_api_whispers_chain_mode(monkeypatch):
     response = client.post("/api/whispers", json=payload)
     assert response.status_code == 200
     assert response.json()["final"] == "Texto degradado por idiomas"
+
+def test_security_ssrf_prevention():
+    """Valida mitigación OWASP A10: Rechazo de esquemas no HTTPs o IPs privadas de metadatos (ej: AWS 169.254.169.254)."""
+    # 1. Intento de metadatos de Cloud
+    payload_ssrf = {
+        "text": "Prueba",
+        "formality_level": 2,
+        "llm": {
+            "base_url": "http://169.254.169.254/latest/meta-data",
+            "api_key": "dummy",
+            "model": "model"
+        }
+    }
+    resp = client.post("/api/enrich", json=payload_ssrf)
+    assert resp.status_code == 422  # Unprocessable Entity por validación Pydantic
+
+    # 2. Intento de IP privada interna
+    payload_private_ip = {
+        "text": "Prueba",
+        "formality_level": 2,
+        "llm": {
+            "base_url": "https://192.168.1.1/api",
+            "api_key": "dummy",
+            "model": "model"
+        }
+    }
+    resp2 = client.post("/api/enrich", json=payload_private_ip)
+    assert resp2.status_code == 422
+
+    # 3. Esquema prohibido (ej: file:// o gopher://)
+    payload_file_scheme = {
+        "text": "Prueba",
+        "formality_level": 2,
+        "llm": {
+            "base_url": "file:///etc/passwd",
+            "api_key": "dummy",
+            "model": "model"
+        }
+    }
+    resp3 = client.post("/api/enrich", json=payload_file_scheme)
+    assert resp3.status_code == 422
+
+def test_security_input_length_limit():
+    """Valida que textos excesivamente largos (DoS) sean rechazados tempranamente."""
+    huge_text = "A" * 15000  # Máximo es 10000
+    payload = {
+        "text": huge_text,
+        "formality_level": 2,
+        "llm": {
+            "base_url": "https://api.groq.com/openai/v1",
+            "api_key": "dummy",
+            "model": "model"
+        }
+    }
+    resp = client.post("/api/enrich", json=payload)
+    assert resp.status_code == 422

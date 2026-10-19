@@ -7,7 +7,7 @@ import os
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from llm_client import LLMClient, SYSTEM_PROMPTS, PROVIDER_DEFAULTS
 from whispers import run_whispers_chain, generate_random_chain, CHAOS_PRESETS, SUPPORTED_LANGUAGES
@@ -22,18 +22,54 @@ app = FastAPI(
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
+from urllib.parse import urlparse
+import ipaddress
+
 class LLMConfig(BaseModel):
     base_url: str = Field("https://api.groq.com/openai/v1")
     api_key: Optional[str] = Field(None)
-    model: str = Field("llama-3.3-70b-versatile")
+    model: str = Field("llama-3.3-70b-versatile", max_length=120)
+
+    @field_validator("base_url")
+    @classmethod
+    def validate_safe_url(cls, v: str) -> str:
+        """Mitigación OWASP A10 (SSRF): Valida protocolo seguro y previene acceso a metadatos cloud o redes privadas."""
+        parsed = urlparse(v)
+        if parsed.scheme not in ("http", "https"):
+            raise ValueError("El esquema de URL debe ser http o https.")
+        
+        hostname = parsed.hostname or ""
+        if not hostname:
+            raise ValueError("Hostname inválido en base_url.")
+
+        # Permitir desarrollo local explícito (ej. Ollama en localhost / 127.0.0.1)
+        if hostname in ("localhost", "127.0.0.1", "::1"):
+            return v.rstrip("/")
+
+        # Si no es local, exigir HTTPS obligatorio
+        if parsed.scheme != "https":
+            raise ValueError("Las APIs externas deben usar HTTPS estrictamente.")
+
+        # Bloquear IPs numéricas privadas o de metadatos (ej. 169.254.169.254 AWS/GCP, 10.x.x.x, 192.168.x.x)
+        try:
+            ip = ipaddress.ip_address(hostname)
+            is_ip = True
+        except ValueError:
+            is_ip = False
+
+        if is_ip:
+            if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved:
+                raise ValueError("No se permite acceso a direcciones IP privadas o de infraestructura interna.")
+
+        return v.rstrip("/")
 
 class EnrichRequest(BaseModel):
-    text: str = Field(..., min_length=1, description="Texto de entrada a enriquecer")
+    text: str = Field(..., min_length=1, max_length=10000, description="Texto de entrada a enriquecer (máx 10k caracteres)")
     formality_level: int = Field(2, ge=1, le=3, description="Nivel de formalidad (1: Formal, 2: Académico, 3: Rococó)")
     llm: LLMConfig
 
 class WhispersRequest(BaseModel):
-    text: str = Field(..., min_length=1, description="Texto original a distorsionar")
+    text: str = Field(..., min_length=1, max_length=10000, description="Texto original a distorsionar (máx 10k caracteres)")
     mode: str = Field("llm", description="'llm' (simulación realista de mondegreens/slang) o 'chain' (traducción real por idiomas)")
     preset: Optional[str] = Field("clasico")
     custom_chain: Optional[List[str]] = Field(None)
