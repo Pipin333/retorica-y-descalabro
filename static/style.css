@@ -356,9 +356,17 @@ textarea {
 
 .controls-row {
   display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+.inputs-row {
+  display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
   gap: 1rem;
+  width: 100%;
 }
 
 .mode-select-group,
@@ -367,12 +375,12 @@ textarea {
   flex-direction: column;
   gap: 0.35rem;
   flex: 1;
-  min-width: 130px;
+  min-width: 140px;
 }
 
 #custom-preset-config {
-  min-width: 100px;
-  flex: 0 1 110px;
+  min-width: 110px;
+  flex: 0 1 120px;
 }
 
 .mode-select-group label,
@@ -388,20 +396,24 @@ textarea {
   color: #fff;
   border: none;
   font-weight: 600;
-  padding: 0 1.4rem;
-  height: 42px;
-  display: inline-flex;
+  font-size: 0.95rem;
+  padding: 0 1.5rem;
+  height: 44px;
+  width: 100%;
+  display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
+  letter-spacing: 0.3px;
   transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
   white-space: nowrap;
 }
 
 .btn-primary:hover {
   background: var(--primary-hover);
-  box-shadow: 0 4px 14px var(--primary-glow);
+  box-shadow: 0 4px 16px var(--primary-glow);
   transform: translateY(-1px);
 }
 

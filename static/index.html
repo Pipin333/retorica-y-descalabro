@@ -68,13 +68,15 @@
           <textarea id="enricher-input" rows="8" placeholder="Escribe cualquier frase, modismo o canción..."></textarea>
 
           <div class="controls-row">
-            <div class="level-select-group">
-              <label for="enricher-level">Nivel de Rimbombancia:</label>
-              <select id="enricher-level">
-                <option value="1">Nivel 1: Correspondencia Formal & Diplomática</option>
-                <option value="2" selected>Nivel 2: Catedrático Académico del Siglo XIX</option>
-                <option value="3">Nivel 3: Barroco Culterano Rococó (Góngora)</option>
-              </select>
+            <div class="inputs-row">
+              <div class="level-select-group">
+                <label for="enricher-level">Nivel de Rimbombancia:</label>
+                <select id="enricher-level">
+                  <option value="1">Nivel 1: Correspondencia Formal & Diplomática</option>
+                  <option value="2" selected>Nivel 2: Catedrático Académico del Siglo XIX</option>
+                  <option value="3">Nivel 3: Barroco Culterano Rococó (Góngora)</option>
+                </select>
+              </div>
             </div>
 
             <button type="button" id="btn-run-enricher" class="btn-primary" onclick="handleEnrich()">
@@ -117,28 +119,30 @@
           <textarea id="whispers-input" rows="8" placeholder="Pega aquí la letra o frase a descalabrar..."></textarea>
 
           <div class="controls-row">
-            <div class="mode-select-group">
-              <label for="whispers-mode">Motor:</label>
-              <select id="whispers-mode" onchange="toggleWhispersModeUI()">
-                <option value="llm" selected>🧠 Simulación Acústica & Slang con LLM</option>
-                <option value="chain">🌐 Traducción Encadenada Real (MyMemory API)</option>
-              </select>
-            </div>
+            <div class="inputs-row">
+              <div class="mode-select-group">
+                <label for="whispers-mode">Motor:</label>
+                <select id="whispers-mode" onchange="toggleWhispersModeUI()">
+                  <option value="llm" selected>🧠 Simulación Acústica & Slang con LLM</option>
+                  <option value="chain">🌐 Traducción Encadenada Real (MyMemory API)</option>
+                </select>
+              </div>
 
-            <div class="level-select-group" id="chain-preset-container" style="display: none;">
-              <label for="whispers-preset">Ruta de traducción:</label>
-              <select id="whispers-preset" onchange="togglePresetCustomOptions()">
-                <option value="ligero">Ligero: ES ➔ EN ➔ FR ➔ ES</option>
-                <option value="clasico" selected>Clásico: ES ➔ EN ➔ DE ➔ IT ➔ ES</option>
-                <option value="exotico">Exótico: ES ➔ JA ➔ RU ➔ AR ➔ ES</option>
-                <option value="maximo_caos">Máximo Caos: ES ➔ EL ➔ PL ➔ FI ➔ JA ➔ DE ➔ ES</option>
-                <option value="personalizado">🎲 Personalizado (Definir saltos)</option>
-              </select>
-            </div>
+              <div class="level-select-group" id="chain-preset-container" style="display: none;">
+                <label for="whispers-preset">Ruta de traducción:</label>
+                <select id="whispers-preset" onchange="togglePresetCustomOptions()">
+                  <option value="ligero">Ligero: ES ➔ EN ➔ FR ➔ ES</option>
+                  <option value="clasico" selected>Clásico: ES ➔ EN ➔ DE ➔ IT ➔ ES</option>
+                  <option value="exotico">Exótico: ES ➔ JA ➔ RU ➔ AR ➔ ES</option>
+                  <option value="maximo_caos">Máximo Caos: ES ➔ EL ➔ PL ➔ FI ➔ JA ➔ DE ➔ ES</option>
+                  <option value="personalizado">🎲 Personalizado (Definir saltos)</option>
+                </select>
+              </div>
 
-            <div class="level-select-group" id="custom-preset-config" style="display: none;">
-              <label for="custom-hops-input">Saltos (1 a 12):</label>
-              <input type="number" id="custom-hops-input" min="1" max="12" value="4" />
+              <div class="level-select-group" id="custom-preset-config" style="display: none;">
+                <label for="custom-hops-input">Saltos (1 a 12):</label>
+                <input type="number" id="custom-hops-input" min="1" max="12" value="4" />
+              </div>
             </div>
 
             <button type="button" id="btn-run-whispers" class="btn-primary" onclick="handleWhispers()">
