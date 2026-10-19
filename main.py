@@ -10,7 +10,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 from enricher import enrich_text_heuristic
-from whispers import run_whispers_chain, CHAOS_PRESETS, SUPPORTED_LANGUAGES
+from whispers import run_whispers_chain, generate_random_chain, CHAOS_PRESETS, SUPPORTED_LANGUAGES
 from llm_client import LLMClient, DEFAULT_SYSTEM_ENRICHER, DEFAULT_SYSTEM_WHISPERS
 
 app = FastAPI(
@@ -35,8 +35,9 @@ class EnrichRequest(BaseModel):
 class WhispersRequest(BaseModel):
     text: str = Field(..., min_length=1, description="Texto original a distorsionar")
     mode: str = Field("chain", description="'chain' (traducción real encadenada) o 'llm'")
-    preset: Optional[str] = Field("clasico", description="Nombre del preset: ligero, clasico, exotico, maximo_caos")
+    preset: Optional[str] = Field("clasico", description="Nombre del preset: ligero, clasico, exotico, maximo_caos, personalizado")
     custom_chain: Optional[List[str]] = Field(None, description="Cadena personalizada de códigos de idioma")
+    custom_hops: Optional[int] = Field(None, ge=1, le=12, description="Número de saltos aleatorios si el preset es 'personalizado'")
     acoustic_distortion: Optional[bool] = Field(True, description="Si True, añade capa previa de malentendidos fonéticos/mondegreens")
     llm_base_url: Optional[str] = Field("https://api.groq.com/openai/v1")
     llm_api_key: Optional[str] = Field(None)
@@ -118,7 +119,11 @@ def whispers_endpoint(req: WhispersRequest):
     # Modo cadena de traducción real
     chain = req.custom_chain
     if not chain:
-        chain = CHAOS_PRESETS.get(req.preset or "clasico", CHAOS_PRESETS["clasico"])
+        if req.preset == "personalizado":
+            hops = req.custom_hops or 4
+            chain = generate_random_chain(hops)
+        else:
+            chain = CHAOS_PRESETS.get(req.preset or "clasico", CHAOS_PRESETS["clasico"])
 
     res = run_whispers_chain(
         req.text,

@@ -165,10 +165,25 @@ async function handleWhispers() {
   stepsTimeline.innerHTML = "";
 
   try {
+    let customChain = null;
+    let customHops = null;
+
+    if (preset === "personalizado") {
+      const hopsVal = parseInt(document.getElementById("custom-hops-input").value, 10);
+      customHops = !isNaN(hopsVal) ? hopsVal : 4;
+
+      const chainVal = document.getElementById("custom-chain-input").value.trim();
+      if (chainVal) {
+        customChain = chainVal.split(",").map(c => c.trim().toLowerCase()).filter(Boolean);
+      }
+    }
+
     const payload = {
       text,
       mode: engine,
       preset: preset,
+      custom_chain: customChain,
+      custom_hops: customHops,
       acoustic_distortion: acoustic,
       ...getLLMConfig()
     };
@@ -205,15 +220,28 @@ async function handleWhispers() {
   }
 }
 
+function togglePresetCustomOptions() {
+  const preset = document.getElementById("whispers-preset").value;
+  const customConfig = document.getElementById("custom-preset-config");
+  if (preset === "personalizado") {
+    customConfig.style.display = "flex";
+  } else {
+    customConfig.style.display = "none";
+  }
+}
+
 function toggleWhispersMode() {
   const engine = document.getElementById("whispers-engine").value;
   const presetContainer = document.getElementById("whispers-preset-container");
+  const customConfig = document.getElementById("custom-preset-config");
   if (engine === "llm") {
     presetContainer.style.opacity = "0.5";
     presetContainer.style.pointerEvents = "none";
+    customConfig.style.display = "none";
   } else {
     presetContainer.style.opacity = "1";
     presetContainer.style.pointerEvents = "auto";
+    togglePresetCustomOptions();
   }
 }
 

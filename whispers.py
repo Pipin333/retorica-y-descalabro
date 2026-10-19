@@ -34,8 +34,32 @@ CHAOS_PRESETS: Dict[str, List[str]] = {
     "ligero": ["es", "en", "fr", "es"],
     "clasico": ["es", "en", "de", "it", "es"],
     "exotico": ["es", "ja", "ru", "ar", "es"],
-    "maximo_caos": ["es", "el", "pl", "fi", "ja", "de", "es"]
+    "maximo_caos": ["es", "el", "pl", "fi", "ja", "de", "es"],
+    "personalizado": []
 }
+
+def generate_random_chain(hops: int = 4) -> List[str]:
+    """
+    Genera una cadena pseudoaleatoria de 'hops' saltos intermedios garantizando
+    que inicie y termine en español ('es') con idiomas sin repetición contigua.
+    
+    Args:
+        hops: Cantidad de saltos intermedios deseados (mínimo 1, máximo 12).
+        
+    Returns:
+        Lista de códigos ISO de idiomas.
+    """
+    import random
+    available = [code for code in SUPPORTED_LANGUAGES.keys() if code != "es"]
+    clamped_hops = max(1, min(hops, 12))
+    
+    # Seleccionar idiomas asegurando variedad
+    if clamped_hops <= len(available):
+        chosen = random.sample(available, clamped_hops)
+    else:
+        chosen = random.choices(available, k=clamped_hops)
+        
+    return ["es"] + chosen + ["es"]
 
 def translate_single_hop(text: str, source_lang: str, target_lang: str, timeout: int = 8) -> str:
     """

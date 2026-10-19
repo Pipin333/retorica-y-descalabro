@@ -78,3 +78,36 @@ def test_acoustic_layer_unit():
     assert "burro" in distorted.lower()
     assert "ahora me amas" in distorted.lower()
     assert len(changes) >= 3
+
+def test_generate_random_chain_unit():
+    """Valida la generación de cadenas aleatorias para el preset personalizado."""
+    from whispers import generate_random_chain
+    chain = generate_random_chain(hops=5)
+    assert chain[0] == "es"
+    assert chain[-1] == "es"
+    assert len(chain) == 7  # 1 inicial + 5 intermedios + 1 final
+
+def test_api_whispers_custom_preset_endpoint(monkeypatch):
+    """Valida que el endpoint acepte preset personalizado con custom_hops."""
+    def mock_run_whispers(text, chain=None, delay_between_hops=0.3, acoustic_distortion=True):
+        return {
+            "original": text,
+            "final": "Custom result",
+            "chain": chain,
+            "steps": [{"step": 0, "lang_name": "Español", "text": text}]
+        }
+
+    import main
+    monkeypatch.setattr(main, "run_whispers_chain", mock_run_whispers)
+
+    payload = {
+        "text": "Hola mundo",
+        "mode": "chain",
+        "preset": "personalizado",
+        "custom_hops": 3
+    }
+    response = client.post("/api/whispers", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["final"] == "Custom result"
+    assert len(data["chain"]) == 5  # es + 3 saltos + es

@@ -149,12 +149,21 @@
 
             <div class="level-select-group" id="whispers-preset-container">
               <label for="whispers-preset">Ruta de idiomas:</label>
-              <select id="whispers-preset">
+              <select id="whispers-preset" onchange="togglePresetCustomOptions()">
                 <option value="ligero">Ligero: ES ➔ EN ➔ FR ➔ ES</option>
                 <option value="clasico" selected>Clásico: ES ➔ EN ➔ DE ➔ IT ➔ ES</option>
                 <option value="exotico">Exótico: ES ➔ JA ➔ RU ➔ AR ➔ ES</option>
                 <option value="maximo_caos">Máximo Caos: ES ➔ EL ➔ PL ➔ FI ➔ JA ➔ DE ➔ ES</option>
+                <option value="personalizado">🎲 Personalizado (Definir largo o idiomas)</option>
               </select>
+            </div>
+
+            <!-- Contenedor desplegable para preset personalizado -->
+            <div class="level-select-group" id="custom-preset-config" style="display: none;">
+              <label for="custom-hops-input">Cantidad de saltos (1 a 12):</label>
+              <input type="number" id="custom-hops-input" min="1" max="12" value="5" />
+              <label for="custom-chain-input" style="margin-top: 4px;">O códigos de idioma (ej: en,ja,ar):</label>
+              <input type="text" id="custom-chain-input" placeholder="Opcional: en, de, ja, it..." />
             </div>
 
             <div class="level-select-group" id="whispers-acoustic-container">
